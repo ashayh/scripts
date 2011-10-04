@@ -1,4 +1,4 @@
-#!/usr/bin/ruby -W0
+#!/usr/bin/env ruby
 
 require 'colorize'
 require 'net/dns/resolver'
@@ -6,11 +6,15 @@ require 'socket'
 require 'trollop'
 require 'whois'
 
+start_time = Time.now
+
 opts = Trollop::options do
     opt :domain, 'Domain to scan', :required => true, :type => String
 end
 
+puts "Target domain: #{opts[:domain]}"
 # Validating domain thru WHOIS
+print 'Validating domain: ',
 begin
     if Whois.query(opts[:domain]).available?
         puts 'ERROR: Invalid domain'.red
@@ -20,7 +24,9 @@ rescue Whois::ServerNotFound=>e
     puts "ERROR: #{e}".red
     exit 1
 end
+print "done\n"
 
+print "Fetching DNS information: "
 r = Net::DNS::Resolver.new
 # Fetch DNS servers
 NS_SERVERS = Hash.new
@@ -36,3 +42,7 @@ mx = r.mx("#{opts[:domain]}")
 mx.each do |m|
     MX_SERVERS[m.exchange] = m.preference
 end
+print "done\n"
+
+# Elapsed time
+puts "Run time: #{Time.now - start_time} seconds"
