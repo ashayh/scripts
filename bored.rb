@@ -23,6 +23,9 @@ begin
 rescue Whois::ServerNotFound=>e
     puts "ERROR: #{e}".red
     exit 1
+rescue Timeout::Error=>e
+    puts "ERROR: #{e}".red
+    exit 1
 end
 print "done\n"
 
@@ -43,6 +46,19 @@ mx.each do |m|
     MX_SERVERS[m.exchange] = m.preference
 end
 print "done\n"
+
+# Try to fetch zone
+NS_SERVERS.each do |ns|
+    print "Attempting to do a zone transfer on #{ns[0]}:",
+    r.nameservers = ns[1]
+    r.use_tcp = true
+    z = r.axfr("#{opts[:domain]}")
+    if not z.answer.empty?
+        print "done (wow ... really?!?)\n"
+        break
+    end
+    print "fail\n"
+end
 
 # Elapsed time
 puts "Run time: #{Time.now - start_time} seconds"
