@@ -2,51 +2,46 @@
 
 require 'colorize'
 require 'dnsruby'
-require 'socket'
 require 'trollop'
 
 opts = Trollop::options do
     opt :domain, 'Domain to scan', :required => true, :type => String
 end
-puts "Target domain: #{opts[:domain]}".light_blue
 
-# Create a new resolver
+# Create a new resolver. Using TCP as it's needed for zone transfers
 r = Dnsruby::Resolver.new( :use_tcp => true )
 
-# DNS servers
-puts "*** Testing DNS servers ***".light_green
+# Gathering information
+puts "Fetching DNS servers for: #{opts[:domain]}".light_green
 begin
-    NS_SERVERS = Hash.new
+    NS_SERVERS = []
     r.query("#{opts[:domain]}", 'NS').answer.each do |ns|
-        NS_SERVERS[ns.nsdname.to_s] = IPSocket.getaddress(ns.nsdname.to_s)
+        NS_SERVERS << ns.nsdname.to_s
     end
 rescue Dnsruby::NXDomain
     puts 'Invalid domain. Aborting.'.red
     exit 1
 end
+
+# Try to do a zone transfer on each DNS servers
 z = ''
 NS_SERVERS.sort.each do |ns|
-    puts "#{ns[0]} ".light_yellow + "(#{ns[1]}):".light_blue
-    puts "Attempting a zone transfer:"
+    puts "Attempting a zone transfer on #{ns}: "
     r.nameserver = ns
     begin
         z = r.query("#{opts[:domain]}", 'AXFR')
-        puts "Wow ... that worked. Really?!?!\n".light_yellow
+        puts "Wow ... that worked. Really?!?!".light_yellow
     rescue Dnsruby::Refused
-            puts "Server refused request\n".red
+            puts "Server refused request".red
     end
 end
-puts "\n"
+puts ''
+puts 'Saving zone information for later use'.light_green if not z.answer.empty?
+puts ''
+puts "WARNING: The script at this point doesn't check if there's a difference
+between each zone data. It might at some point in the future.".red if not z.answer.empty?
 
-# MX servers
-puts "*** Testing MX servers ***".light_green
-MX_SERVERS = Hash.new
-r.query("#{opts[:domain]}", 'MX').answer.each do |mx|
-    MX_SERVERS[mx.exchange.to_s] = mx.preference
+# Start scanning hosts
+if z.answer
+else
 end
-MX_SERVERS.sort_by{ |k,v| v}.each do |mx|
-    puts "#{mx[0]} ".downcase.light_yellow \
-        + "(#{IPSocket.getaddress(mx[0])})".light_blue \
-        + "(#{mx[1]}): \n".light_blue
-end
-puts "\n"
