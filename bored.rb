@@ -39,9 +39,4 @@ puts ''
 puts 'Saving zone information for later use'.light_green if not z.answer.empty?
 puts ''
 puts "WARNING: The script at this point doesn't check if there's a difference
-between each zone data. It might at some point in the future.".red if not z.answer.empty?
-
-# Start scanning hosts
-if z.answer
-else
-end
+between each server's zone data. It might at some point in the future.".red if not z.answer.empty?
