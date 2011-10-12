@@ -36,7 +36,7 @@ rescue=>e
 end
 db.collection_names.each do |c|
     if not c =~ /^messages$/
-        cmd = "mongoexport -h #{opts[:server]} -d #{opts[:database]} -c #{c} -o #{opts[:destdir]}/#{c}.bson"
+        cmd = "mongoexport -h #{opts[:server]} -d #{opts[:database]} -c #{c} -o #{opts[:destdir]}/#{opts[:database]}.#{c}.bson"
         if opts[:username]
             cmd = cmd + " -u #{opts[:username]} -p #{opts[:password]}"
         end
