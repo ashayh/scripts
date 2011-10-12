@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-''' Author: Jean-Francois Theroux <failshell@theroux.ca>
+''' Author: Jean-Francois Theroux <failshell@gmail.com>
 
     Features:
         - Backup either all DBs or some of them
