@@ -6,6 +6,7 @@
 #
 # License: GPLv2
 
+require 'rubygems'
 require 'colorize'
 require 'dnsruby'
 require 'net/smtp'
