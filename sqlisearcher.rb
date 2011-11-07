@@ -30,8 +30,10 @@ Anemone.crawl(base_url) do |a|
   a.on_every_page do |p|
     begin
       p.doc.xpath('//form').each do |n|
-	if n['method'] = 'post' and n['type'] = 'text'
-	  puts "#{p.url}: POST found"
+	if n['method'] =~ /^post$/i
+	  # Now that we have a testable URL, let's try
+	  # some SQLi :)
+	  puts p.url
 	end
       end
     rescue NoMethodError
