@@ -5,7 +5,7 @@
 # in the fields. It will then look for some MySQL error.
 #
 # Requires: MongoDB to store the pages. Only really useful for larger
-# sites. No security needed for that either.
+# sites.
 #
 # License: GPLv2
 
@@ -31,9 +31,14 @@ Anemone.crawl(base_url) do |a|
     begin
       p.doc.xpath('//form').each do |n|
 	if n['method'] =~ /^post$/i
-	  # Now that we have a testable URL, let's try
+	  # Now that we have a testable page, let's try
 	  # some SQLi :)
-	  puts p.url
+	  n.xpath('//input').each do |i|
+	    if i['type'] =~ /^submit|text$/i
+	      # test'n'debug
+ 	      puts "#{n['action']} : #{i['type']}"
+	    end
+	  end
 	end
       end
     rescue NoMethodError
@@ -42,7 +47,7 @@ Anemone.crawl(base_url) do |a|
   end
 end
 
-puts 'These URLs were not tested due to some error. Please review them manually:'.light_red
+puts 'These URLs were not tested due to some error. Please review them manually:'.yellow
 UNTESTED_URLS.each do |ut|
-    puts ut.light_yellow
+  puts ut.yellow
 end
