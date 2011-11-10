@@ -36,7 +36,7 @@ end
 
 # Help menu
 opts = Trollop::options do
-  opt :file, 'Save to file', :default => '/tmp/ewcod.txt'
+  opt :file, 'Save to file', :default => '/tmp/tentacles.txt'
   opt :site, 'Site to crawl', :required => true, :type => String
   opt :user_agent, 'User agent', :default => 'Anemone/0.6.1'
 end
