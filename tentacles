@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 #
-# Evil web crawler of death!
+# Tentacles: the evil web crawler of death!
 #
+# Author: Jean-Francois Theroux <failshell@gmail.com>
 # Version: 0.1
 # License: GPLv2
 #
@@ -67,28 +68,24 @@ end
 
 # Blind testing by modifying the URLS to append ' to each =
 # and check if the returned page contains a MySQL error.
-puts 'Testing each URL'
+puts 'Testing URLs'
 EXP_URLS = []
 TESTED_URLS = []
 URLS.each do |u|
-  if u =~ /\?/
-    new_url = u.gsub(/=/, "='")
-    d = Net::HTTP.get(URI(new_url))
-    if d =~ /You have an error in your SQL syntax/i
-      puts "#{u}: is injectable!"
-      EXP_URLS << "#{u}"
-      u = URI(u)
-      TESTED_URLS << u.host + u.path
-    elsif d =~ /supplied argument is not a valid MySQL result/i
-      puts "#{u}: is injectable!"
-      EXP_URLS << "#{u}"
-      u = URI(u)
-      TESTED_URLS << u.host + u.path
+  url = URI(u)
+  if not TESTED_URLS.include?(url.host + url.path)
+    if u =~ /\?/
+      new_url = u.gsub(/=/, "='")
+      d = Net::HTTP.get(URI(new_url))
+      if d =~ /You have an error in your SQL syntax|supplied argument is not a valid MySQL result/i
+        puts "#{u}: is injectable!"
+        EXP_URLS << "#{u}"
+        TESTED_URLS << url.host + url.path
+        puts "#{url.host}#{url.path} will not be tested again."
+      end
     end
   end
 end
-
-puts TESTED_URLS
 
 # Write results to a text file
 if opts[:file]
