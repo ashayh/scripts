@@ -24,6 +24,13 @@ begin
   require 'uri'
 rescue LoadError => e
   puts "Missing gem: #{e}"
+  # This is a hack. The robots gem is bugged. Must warn others ...
+  if e.to_s =~ /robots/
+    puts ''
+    puts "After installing the gem, if you still get an error."
+    puts "Find the file named 'robots.rb'and change its permissions"
+    puts "to 644. It will then load. The gem is bugged."
+    end
   exit 1
 end
 
