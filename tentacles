@@ -16,11 +16,16 @@
 # WARNING: This tool doesn't try to hide itself, you will be
 # very visible in logs. Also, it doesn't obey robots.txt
 
-require 'rubygems'
-require 'anemone'
-require 'net/http'
-require 'trollop'
-require 'uri'
+begin
+  require 'rubygems'
+  require 'anemone'
+  require 'net/http'
+  require 'trollop'
+  require 'uri'
+rescue LoadError => e
+  puts "Missing gem: #{e}"
+  exit 1
+end
 
 # Help menu
 opts = Trollop::options do
