@@ -3,6 +3,8 @@
 # Zabbix monitoring script for RabbitMQ. Returns the number of queued
 # messages.
 #
+# Requires the RabbitMQ Management plugin.
+#
 # Author: Jean-Francois Theroux <failshell@gmail.com>
 #
 # License: GPLv2
