@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'rubygems' if RUBY_VERSION < '1.9'
+require 'rest_client'
+require 'json'
+
+# Connection settings
+user = 'username'
+pass = 'password'
+host = 'localhost'
+port = '55672'
+
+req =  RestClient.get "http://#{user}:#{pass}@#{host}:#{port}/api/overview"
+puts JSON.parse(req)['queue_totals']['messages']
