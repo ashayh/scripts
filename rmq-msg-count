@@ -1,4 +1,13 @@
 #!/usr/bin/env ruby
+#
+# Zabbix monitoring script for RabbitMQ. Returns the number of queued
+# messages.
+#
+# Requires the RabbitMQ Management plugin.
+#
+# Author: Jean-Francois Theroux <failshell@gmail.com>
+#
+# License: GPLv2
 
 require 'rubygems' if RUBY_VERSION < '1.9'
 require 'rest_client'

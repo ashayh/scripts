@@ -5,6 +5,8 @@
 # Requires the RabbitMQ Management plugin to be installed.
 #
 # Author: Jean-Francois Theroux <failshell@gmail.com>
+#
+# License: GPLv2
 
 require 'rubygems' if RUBY_VERSION < '1.9'
 require 'rest_client'
