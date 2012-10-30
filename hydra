@@ -4,6 +4,7 @@ require 'net/ssh'
 require 'trollop'
 require 'peach'
 require 'json'
+require 'colorize'
 
 # Credentials are put here, instead of CLI options, so that
 # the password doesn't show up when you run 'ps'
@@ -31,10 +32,16 @@ hosts.peach do |host|
       end
       results[host] = output
     end
-  rescue => e
-    puts host + ': ' + e.to_s
+  rescue Errno::ECONNREFUSED => e
+    STDERR.puts "#{host}: #{e.to_s}".yellow
+  rescue Net::SSH::AuthenticationFailed
+    STDERR.puts "#{host}: Invalid user".yellow
   end
 end
 if opts.verbose
-  puts JSON.pretty_generate(results)
+  if results == {}
+    STDERR.puts 'No results... Doh!'.red
+  else
+    puts JSON.pretty_generate(results).light_green
+  end
 end
