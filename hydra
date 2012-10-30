@@ -31,7 +31,7 @@ File.open(opts.file).each_line { |l| hosts << l.gsub("\n", '') }
 results = {}
 hosts.peach do |host|
   begin
-    Net::SSH.start(host, user, :password => password) do |ssh|
+    Net::SSH.start(host, user, :password => password, :config => false) do |ssh|
       output = []
       ssh.exec!(opts.command).each_line do |out|
         output << out.gsub("\n", '')
