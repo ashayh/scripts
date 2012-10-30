@@ -46,6 +46,8 @@ hosts.peach do |host|
     STDERR.puts "#{host}: #{e.to_s}".yellow
   rescue Errno::ETIMEDOUT => e
     STDERR.puts "#{host}: #{e.to_s}".yellow
+  rescue Errno::EHOSTUNREACH => e
+    STDERR.puts "#{host}: #{e.to_s}".yellow
   end
 end
 if opts.verbose
