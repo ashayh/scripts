@@ -42,6 +42,10 @@ hosts.peach do |host|
     STDERR.puts "#{host}: #{e.to_s}".yellow
   rescue Net::SSH::AuthenticationFailed
     STDERR.puts "#{host}: Invalid user".yellow
+  rescue SocketError => e
+    STDERR.puts "#{host}: #{e.to_s}".yellow
+  rescue Errno::ETIMEDOUT => e
+    STDERR.puts "#{host}: #{e.to_s}".yellow
   end
 end
 if opts.verbose
