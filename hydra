@@ -11,6 +11,7 @@ require 'trollop'
 require 'peach'
 require 'json'
 require 'colorize'
+require 'netaddr'
 
 # Credentials are put here, instead of CLI options, so that
 # the password doesn't show up when you run 'ps'
@@ -20,12 +21,21 @@ password = 'password'
 # CLI help menu
 opts = Trollop::options do
   opt :command, 'Command to run', :required => true, :type => String
-  opt :file, 'Hosts list file', :required => true, :type => String
+  opt :file, 'Hosts list file', :required => false, :type => String
+  opt :subnet, 'Specify a subnet', :type => String
   opt :verbose, 'Verbose mode'
 end
 
 hosts = []
-File.open(opts.file).each_line { |l| hosts << l.gsub("\n", '') }
+
+if opts.file
+  File.open(opts.file).each_line { |l| hosts << l.gsub("\n", '') }
+elsif opts.subnet
+   cidr =  NetAddr::CIDR.create(opts.subnet)
+   hosts = cidr.enumerate
+else
+   abort("Must specify host list or subnet")
+end
 
 # multithreaded command execution
 results = {}
