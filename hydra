@@ -77,9 +77,7 @@ if opts.xls
     results.each do |result|
       row = sheet.row(sheet.row_count + 1)
       row.push result[0]
-      result[1].each do |r|
-        row.push r
-      end
+      result[1].each { |r| row.push r }
     end
     begin
       book.write('hydra.xls')
